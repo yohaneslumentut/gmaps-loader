@@ -109,3 +109,30 @@ describe('hook reload validation action', () => {
     expect(loader.isReloadOk).toBe(false);
   });
 });
+
+describe('hook loadScript remove existing google.maps', () => {
+  it('delete existing google.maps', () => {
+    const setupGoogleMock = () => {
+      global.window.google = {
+        maps: jest.fn() as any,
+      };
+    };
+
+    setupGoogleMock();
+
+    expect(google.maps).toBeDefined();
+
+    const { result } = renderHook(() =>
+      useScriptLoader({
+        apiKey: '1234567',
+        libraries: ['places'],
+      })
+    );
+
+    act(() => {
+      result.current.loadScript?.('id', 'ID');
+    });
+
+    expect(google.maps).toBeUndefined();
+  });
+});

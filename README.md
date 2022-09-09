@@ -1,6 +1,7 @@
 # React Google Maps Script Loader
 
 ![Build](https://github.com/yohaneslumentut/gmaps-script-loader/workflows/CI/badge.svg)
+[![codecov](https://codecov.io/gh/gmaps-script-loader/branch/master/graph/badge.svg)](https://codecov.io/gh/gmaps-script-loader)
 [![npm](https://img.shields.io/npm/v/gmaps-script-loader)](https://www.npmjs.com/package/gmaps-script-loader)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 
