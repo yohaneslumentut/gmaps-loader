@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "license": "MIT",
   "author": "Yohanes O.Lumentut",
+  "homepage": "https://github.com/yohaneslumentut/gmaps-script-loader/blob/master/README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yohaneslumentut/gmaps-script-loader"
+  },
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
