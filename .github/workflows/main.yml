@@ -2,7 +2,7 @@ name: CI
 on: [push]
 jobs:
   build:
-    name: Build, lint, and test on Node 14 and ubuntu-latest
+    name: Build, lint, and test on Node 16 and ubuntu-latest
 
     runs-on: ubuntu-latest
 
@@ -10,10 +10,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
 
-      - name: Use Node 14
+      - name: Use Node 16
         uses: actions/setup-node@v1
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Install deps and build (with cache)
         uses: bahmutov/npm-install@v1

@@ -69,7 +69,7 @@ export const useScriptLoader = ({
         if (scriptsLength > 1 || retries === 7) {
           clearInterval(retryInterval);
           setIsReloadOk(scriptsLength > 1);
-          setTimeout(() => (isProcessing.current = false), 0);
+          setTimeout(() => (isProcessing.current = false), 60);
         }
         scriptsLength = getAllGmapAPIScriptLength();
         retries += 1;

@@ -96,14 +96,14 @@ describe('hook reload validation action', () => {
 
     await act(async () => {
       loader.checkAllGmapAPIScripts(0, 1, 3);
-      await new Promise(r => setTimeout(r, 0));
+      await new Promise(r => setTimeout(r, 70));
     });
 
     expect(result.current.isReloadOk).toBe(true);
 
     await act(async () => {
       loader.checkAllGmapAPIScripts(7, 1, 1);
-      await new Promise(r => setTimeout(r, 0));
+      await new Promise(r => setTimeout(r, 70));
     });
 
     expect(loader.isReloadOk).toBe(false);
