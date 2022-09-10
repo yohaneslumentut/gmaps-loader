@@ -31,6 +31,34 @@ TypeScript users need to install the following types package.
 npm i -D @types/google.maps
 ```
 
+## API Reference
+
+**useScriptLoader** is a react-hook that accepts **UseScriptLoader** property and returns a **ScriptLoader** object:
+
+```ts
+const useScriptLoader = (props: UseScriptLoader): ScriptLoader
+```
+
+```ts
+type Libraries = Array<
+  'drawing' | 'geometry' | 'localContext' | 'places' | 'visualization'
+>;
+
+interface UseScriptLoader {
+  apiKey: string;
+  libraries: Libraries;
+}
+
+interface ScriptLoader {
+  loadScript: (language: string, region: string) => void;
+  isMapReady: boolean;
+  isReloadOk: boolean;
+}
+
+// Note: ScriptLoader actually return another function which is checkAllGmapAPIScripts
+// but it is exposed only for internal testing purposes
+```
+
 ## Usage
 
 The `useScriptLoader` hook can be used as follow:
