@@ -1,6 +1,6 @@
 # React Google Maps Script Loader
 
-![Build](https://github.com/yohaneslumentut/gmaps-script-loader/workflows/CI/badge.svg)
+![Build](https://github.com/yohaneslumentut/gmaps-script-loader/workflows/Test/badge.svg)
 [![codecov](https://codecov.io/gh/yohaneslumentut/gmaps-script-loader/branch/master/graph/badge.svg)](https://codecov.io/gh/yohaneslumentut/gmaps-script-loader)
 [![npm](https://img.shields.io/npm/v/gmaps-script-loader)](https://www.npmjs.com/package/gmaps-script-loader)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
@@ -180,6 +180,8 @@ export default function Language({
   );
 }
 ```
+
+Here is another [example](https://github.com/yohaneslumentut/location-finder) on React + redux-observable epic.
 
 ## Demo
 
