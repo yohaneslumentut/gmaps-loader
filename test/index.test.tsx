@@ -1,5 +1,5 @@
 import { act, renderHook } from '@testing-library/react';
-import { useScriptLoader, ScriptLoader } from '../src/index';
+import { useScriptLoader, ScriptLoader } from '../src';
 
 describe('hook initialize', () => {
   let loader: ScriptLoader;
@@ -94,19 +94,21 @@ describe('hook reload validation action', () => {
 
     expect(loader.isReloadOk).toBe(false);
 
+    const scriptSrcUrls = [
+      'https://maps.googleapis.com/maps-api-v3/api/js/55/11/intl/id_ALL/common.js',
+      'https://maps.googleapis.com/maps-api-v3/api/js/55/11/intl/id_ALL/util.js',
+      'https://maps.googleapis.com/maps-api-v3/api/js/55/11/intl/id_ALL/map.js',
+    ];
+
     await act(async () => {
-      loader.checkAllGmapAPIScripts(0, 1, 3);
-      await new Promise(r => setTimeout(r, 70));
+      scriptSrcUrls.forEach(url => {
+        const script = document.createElement('script');
+        script.src = url;
+        document.head.append(script);
+      });
     });
 
     expect(result.current.isReloadOk).toBe(true);
-
-    await act(async () => {
-      loader.checkAllGmapAPIScripts(7, 1, 1);
-      await new Promise(r => setTimeout(r, 70));
-    });
-
-    expect(loader.isReloadOk).toBe(false);
   });
 });
 

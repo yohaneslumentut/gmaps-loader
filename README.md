@@ -54,9 +54,6 @@ interface ScriptLoader {
   isMapReady: boolean;
   isReloadOk: boolean;
 }
-
-// Note: ScriptLoader actually return another function which is checkAllGmapAPIScripts
-// but it is exposed only for internal testing purposes
 ```
 
 ## Usage
