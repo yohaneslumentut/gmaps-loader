@@ -1,4 +1,4 @@
+import { ScriptLoader, UseScriptLoader } from './useScriptLoader';
 import { useScriptLoader } from './useScriptLoader';
-import { ScriptLoader, Libraries, UseScriptLoader } from './type';
 
-export { useScriptLoader, ScriptLoader, Libraries, UseScriptLoader };
+export { useScriptLoader, ScriptLoader, UseScriptLoader };

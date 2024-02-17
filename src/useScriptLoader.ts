@@ -1,12 +1,46 @@
-import { useCallback, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import scriptHandler from './scriptHandler';
-import { UseScriptLoader, ScriptLoader } from './type';
+import { Libraries } from './scriptHandler';
 
-export const useScriptLoader = (props: UseScriptLoader): ScriptLoader => {
-  const isProcessing = useRef<boolean>(false);
+declare global {
+  interface Window {
+    initMap: () => void;
+  }
+}
 
-  const [isMapReady, setIsMapReady] = useState(false);
-  const [isReloadOk, setIsReloadOk] = useState(false);
+export interface ScriptLoader {
+  loadScript: (language: string, region: string) => void;
+  isLoading: MutableRefObject<boolean>;
+}
+
+export interface UseScriptLoader {
+  apiKey: string;
+  libraries: Libraries;
+  initMap: () => Promise<void>;
+}
+
+const originalConsoleWarn = console.warn;
+
+export const useScriptLoader = ({
+  apiKey,
+  initMap,
+  libraries,
+}: UseScriptLoader): ScriptLoader => {
+  const isLoading = useRef<boolean>(false);
+
+  useEffect(() => {
+    window.initMap = initMap;
+  }, [initMap]);
+
+  const warnCount = useRef(0);
+
+  const suppressedConsoleWarn = useCallback(() => {
+    warnCount.current++;
+    if (warnCount.current > 1) {
+      console.warn = originalConsoleWarn;
+      warnCount.current = 0;
+    }
+  }, []);
 
   const observeScript = useCallback(() => {
     const observer = new MutationObserver(
@@ -14,14 +48,12 @@ export const useScriptLoader = (props: UseScriptLoader): ScriptLoader => {
         for (const mutation of mutationsList) {
           const scripts = scriptHandler.getAllGmapsScript();
           if (mutation.type === 'childList' && scripts?.length > 1) {
-            setIsReloadOk(true);
-            isProcessing.current = false;
+            isLoading.current = false;
             observer.disconnect();
           }
         }
       }
     );
-
     observer.observe(document.head, {
       childList: true,
       subtree: true,
@@ -29,33 +61,29 @@ export const useScriptLoader = (props: UseScriptLoader): ScriptLoader => {
   }, []);
 
   const loadScript = useCallback(
-    (language: string, region: string): boolean => {
-      if (isProcessing.current) return false;
+    (language: string, region: string) => {
+      if (isLoading.current) return;
 
-      setIsMapReady(false);
-      setIsReloadOk(false);
+      isLoading.current = true;
 
-      isProcessing.current = true;
-
-      scriptHandler.removeAllGmapsAPIScript();
+      scriptHandler.removeExistingGmapsAPIScript(() => {
+        console.warn = suppressedConsoleWarn;
+      });
 
       scriptHandler.createGmapsScriptElement({
-        ...props,
+        apiKey,
         region,
         language,
-        onLoad: () => setIsMapReady(true),
+        libraries,
       });
 
       observeScript();
-
-      return true;
     },
-    [props, observeScript]
+    [apiKey, libraries, observeScript, suppressedConsoleWarn]
   );
 
   return {
     loadScript,
-    isMapReady,
-    isReloadOk,
+    isLoading,
   };
 };

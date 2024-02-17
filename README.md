@@ -51,8 +51,6 @@ interface UseScriptLoader {
 
 interface ScriptLoader {
   loadScript: (language: string, region: string) => void;
-  isMapReady: boolean;
-  isReloadOk: boolean;
 }
 ```
 
@@ -61,7 +59,7 @@ interface ScriptLoader {
 The `useScriptLoader` hook can be used as follow:
 
 ```ts
-const { loadScript, isMapReady, isReloadOk } = useScriptLoader({
+const { loadScript } = useScriptLoader({
   apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string,
   libraries: ['places'],
 });
@@ -80,39 +78,42 @@ import Language from './Language';
 import './styles.css';
 
 export default function App() {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const mapElementRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<google.maps.Map | null>(null);
 
-  const { loadScript, isMapReady, isReloadOk } = useScriptLoader({
-    apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string,
-    libraries: ['places'],
-  });
+  const initMap = useCallback(async () => {
+    const { Map } = google.maps;
+    const currentCenter = mapRef.current?.getCenter();
+
+    mapRef.current = new Map(mapElementRef.current as HTMLElement, {
+      center: {
+        lat: currentCenter?.lat() ?? -34.397,
+        lng: currentCenter?.lng() ?? 150.644,
+      },
+      zoom: mapRef.current?.getZoom() ?? 8,
+    });
+  }, []);
 
   const [language, setLanguage] = useState<string>('bahasa');
 
-  useEffect(() => {
-    loadScript('id', 'ID');
-  }, [loadScript]);
+  const mapLoader = useScriptLoader({
+    apiKey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+    libraries: ['places'],
+    initMap,
+  });
 
   useEffect(() => {
-    if (ref.current && isMapReady) {
-      console.log('map init');
-      new google.maps.Map(ref.current, {
-        zoom: 12,
-        center: { lat: -6.21462, lng: 106.84513 },
-      });
-    }
-  }, [isMapReady]);
+    mapLoader.loadScript('id', 'ID');
+  }, [mapLoader]);
 
   return (
     <>
-      {isReloadOk && (
-        <Language
-          loadScript={loadScript}
-          language={language}
-          setLanguage={setLanguage}
-        />
-      )}
-      <div ref={ref} style={{ width: '100%', height: '100vh' }} />
+      <Language
+        loader={mapLoader}
+        language={language}
+        setLanguage={setLanguage}
+      />
+      <div ref={mapElementRef} style={{ width: '100vw', height: '100vh' }} />
     </>
   );
 }
@@ -149,20 +150,20 @@ const languages: Languages = {
 const options = ['bahasa', 'english', 'chinese'];
 
 export default function Language({
-  loadScript,
+  loader,
   language,
   setLanguage,
 }: {
-  loadScript: (language: string, region: string) => void;
+  loader: ScriptLoader;
   language: string;
   setLanguage: Dispatch<SetStateAction<string>>;
 }) {
   useEffect(() => {
     if (language) {
       const selected = languages[language];
-      loadScript(selected.language, selected.region);
+      loader.loadScript(selected.language, selected.region);
     }
-  }, [language, loadScript]);
+  }, [loader, language]);
 
   return (
     <div style={{ position: 'absolute', right: 70, top: 10, zIndex: 50 }}>
@@ -177,12 +178,6 @@ export default function Language({
   );
 }
 ```
-
-Here is another [example](https://github.com/yohaneslumentut/location-finder) on React + redux-observable epic.
-
-## Demo
-
-You can check the demo at [codesandbox.id](https://codesandbox.io/s/quirky-yalow-847k8r) and if the **API_KEY** has expired, you can fork the sandbox and replace **REACT_APP_GOOGLE_MAPS_API_KEY** at `.env` file with yours.
 
 ## Contribute
 
