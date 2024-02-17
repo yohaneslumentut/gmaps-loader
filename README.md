@@ -47,6 +47,7 @@ type Libraries = Array<
 interface UseScriptLoader {
   apiKey: string;
   libraries: Libraries;
+  initMap: () => Promise<void>;
 }
 
 interface ScriptLoader {
@@ -62,6 +63,7 @@ The `useScriptLoader` hook can be used as follow:
 const { loadScript } = useScriptLoader({
   apiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string,
   libraries: ['places'],
+  initMap,
 });
 ```
 
